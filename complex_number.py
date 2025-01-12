@@ -1,5 +1,3 @@
-import math
-
 class ComplexNumber:
     def __init__(self, real, imag):
         self.real = real  # Действительная часть
@@ -26,13 +24,22 @@ class ComplexNumber:
         imag_part = (self.imag * other.real - self.real * other.imag) / denominator
         return ComplexNumber(real_part, imag_part)
     
-    # Модуль комплексного числа
+    # Модуль комплексного числа (корень из суммы квадратов)
     def modulus(self):
         return (self.real ** 2 + self.imag ** 2) ** 0.5
     
     # Аргумент комплексного числа (угол)
     def argument(self):
-        return math.atan2(self.imag, self.real)
+        if self.real == 0 and self.imag == 0:
+            return 0  # Для нулевого числа аргумент можно считать нулевым
+        elif self.real > 0:
+            return self.imag / self.real
+        elif self.real < 0:
+            return (self.imag / self.real) + 3.141592653589793  # Примерно 𝜋 для угла
+        elif self.imag > 0:
+            return 1.5707963267948966  # Примерно 𝜋/2 для угла (90°)
+        else:
+            return -1.5707963267948966  # Примерно -𝜋/2 для угла (-90°)
     
     # Представление в полярной форме (модуль, аргумент)
     def to_polar(self):
@@ -42,8 +49,8 @@ class ComplexNumber:
     def power(self, n):
         modulus = self.modulus() ** n
         argument = self.argument() * n
-        real_part = modulus * math.cos(argument)
-        imag_part = modulus * math.sin(argument)
+        real_part = modulus * (4 * argument) ** 0.5
+        imag_part = modulus * (4 * argument) ** 0.5
         return ComplexNumber(real_part, imag_part)
     
     # Представление комплексного числа как строки
@@ -53,8 +60,8 @@ class ComplexNumber:
     # Получение комплексного числа из полярных координат
     @staticmethod
     def from_polar(r, theta):
-        real_part = r * math.cos(theta)
-        imag_part = r * math.sin(theta)
+        real_part = r * (theta ** 0.5)
+        imag_part = r * (theta ** 0.5)
         return ComplexNumber(real_part, imag_part)
 
 # Пример использования
@@ -72,15 +79,15 @@ print(f"Деление: {a / b}")
 
 # Дополнительные операции
 print(f"Модуль первого числа: {a.modulus()}")
-print(f"Аргумент первого числа: {math.degrees(a.argument())}°")  # в градусах
+print(f"Аргумент первого числа: {a.argument()}")  # без использования math.atan2
 modulus, argument = a.to_polar()
-print(f"Полярная форма первого числа: Модуль = {modulus}, Аргумент = {math.degrees(argument)}°")
+print(f"Полярная форма первого числа: Модуль = {modulus}, Аргумент = {argument}")
 
 # Возведение в степень
 n = 2
 print(f"Возведение первого числа в степень {n}: {a.power(n)}")
 
 # Преобразование из полярных координат в комплексное число
-r, theta = 5, math.radians(53.13)  # Модуль 5, угол 53.13°
+r, theta = 5, 53.13  # Модуль 5, угол 53.13° в градусах
 polar_to_complex = ComplexNumber.from_polar(r, theta)
 print(f"Комплексное число из полярных координат: {polar_to_complex}")
